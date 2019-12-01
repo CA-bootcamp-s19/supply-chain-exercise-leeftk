@@ -156,7 +156,7 @@ modifier sold(uint _sku){
   {
     require(msg.sender == items[sku].seller);
     Item storage item = items[sku];
-    item.state = State.Sold;
+    item.state = State.Shipped;
     emit LogShipped(sku);
 
   }
@@ -166,7 +166,10 @@ modifier sold(uint _sku){
   function receiveItem(uint sku)
     public sold(sku)
   {
+
     require(msg.sender == items[sku].buyer);
+    Item storage item = items[sku];
+    item.state = State.Received;
     emit LogReceived(sku);
   }
 
