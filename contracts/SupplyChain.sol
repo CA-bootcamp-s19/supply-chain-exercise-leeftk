@@ -85,7 +85,7 @@ contract SupplyChain {
  modifier forSale (uint _sku){ 
    uint _price = items[_sku].price;
    uint _state = uint(items[_sku].state);
-   require(_price >= 0); 
+  // require(_price >= 0); 
    require (_state >= 0);
    _;
    }
@@ -129,20 +129,19 @@ modifier sold(uint _sku){
 //     if the buyer paid enough, and check the value after the function is called to make sure the buyer is
 //     refunded any excess ether sent. Remember to call the event associated with this function!*/
 
-  function buyItem(uint sku) forSale(sku) checkValue(sku)
+  function buyItem(uint sku , address payable _buyer, uint _price)  forSale(sku) checkValue(sku) paidEnough(_price)
     payable public  
   {
   
-    require(msg.value >= items[sku].price);
     
     
      
     //fetch items
     
     address payable seller =  items[sku].seller;
-    seller.transfer(msg.value);
-    items[sku].buyer == msg.sender;
-    state == State(1);
+    seller.transfer(_price);
+    items[sku].buyer == _buyer;
+    state ==State(1);
     emit LogSold(sku);
     
   }
