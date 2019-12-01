@@ -33,7 +33,7 @@ contract SupplyChain {
   enum State { ForSale, Sold, Shipped, Received }
     State state;
    // State constant defaultChoice = State.ForSale;
-  
+  State constant defaultChoice = State.ForSale;
 
 
   /* Create a struct named Item.
@@ -134,15 +134,15 @@ modifier sold(uint _sku){
   {
   
     require(msg.value >= items[sku].price);
-    
+    Item storage item = items[sku];
     
      
     //fetch items
     
-    address payable seller =  items[sku].seller;
-    seller.transfer(msg.value);
-    items[sku].buyer == msg.sender;
-    state == State(1);
+    address payable seller = item.seller;
+    seller.transfer(item.price);
+    item.buyer = msg.sender;
+    item.state = State.Sold;
     emit LogSold(sku);
     
   }
@@ -155,6 +155,8 @@ modifier sold(uint _sku){
   
   {
     require(msg.sender == items[sku].seller);
+    Item storage item = items[sku];
+    item.state = State.Sold;
     emit LogShipped(sku);
 
   }
